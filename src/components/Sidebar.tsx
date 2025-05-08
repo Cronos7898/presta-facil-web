@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Calendar, DollarSign, Home, List, User, UserPlus } from "lucide-react";
+import { Calendar, DollarSign, Home, List, LogOut, User, UserPlus } from "lucide-react";
+import { toast } from "@/components/ui/sonner";
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
 
   const menuItems = [
@@ -15,6 +17,12 @@ const Sidebar: React.FC = () => {
     { name: 'Préstamos', path: '/loans', icon: <DollarSign className="h-5 w-5" /> },
     { name: 'Pagos', path: '/payments', icon: <Calendar className="h-5 w-5" /> },
   ];
+  
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    toast.success("Sesión cerrada exitosamente");
+    navigate('/login');
+  };
 
   return (
     <div className={`bg-sidebar h-screen shadow-md flex flex-col transition-all duration-300 ${collapsed ? 'w-16' : 'w-64'}`}>
@@ -49,15 +57,38 @@ const Sidebar: React.FC = () => {
       
       <div className="p-4 border-t border-sidebar-border">
         {!collapsed && (
-          <div className="flex items-center">
-            <User className="h-8 w-8 rounded-full bg-sidebar-accent text-sidebar-accent-foreground p-1" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-sidebar-foreground">Admin</p>
-              <p className="text-xs text-sidebar-foreground/60">admin@prestafacil.com</p>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center">
+              <User className="h-8 w-8 rounded-full bg-sidebar-accent text-sidebar-accent-foreground p-1" />
+              <div className="ml-3">
+                <p className="text-sm font-medium text-sidebar-foreground">Edward</p>
+                <p className="text-xs text-sidebar-foreground/60">admin@prestafacil.com</p>
+              </div>
             </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full justify-start" 
+              onClick={handleLogout}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Cerrar sesión
+            </Button>
           </div>
         )}
-        {collapsed && <User className="h-8 w-8 mx-auto rounded-full bg-sidebar-accent text-sidebar-accent-foreground p-1" />}
+        {collapsed && (
+          <div className="flex flex-col items-center gap-3">
+            <User className="h-8 w-8 mx-auto rounded-full bg-sidebar-accent text-sidebar-accent-foreground p-1" />
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={handleLogout}
+              title="Cerrar sesión"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
