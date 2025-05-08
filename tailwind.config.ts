@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom colors for our lending app
+				lending: {
+					primary: '#1a73e8',
+					secondary: '#0f9d58',
+					accent: '#4285f4',
+					light: '#f8f9fa',
+					muted: '#f1f3f4',
 				}
 			},
 			borderRadius: {
