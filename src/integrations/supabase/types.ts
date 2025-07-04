@@ -39,6 +39,42 @@ export type Database = {
         }
         Relationships: []
       }
+      clients: {
+        Row: {
+          address: string | null
+          created_at: string
+          dni: string
+          email: string | null
+          first_name: string
+          id: string
+          last_name: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          dni: string
+          email?: string | null
+          first_name: string
+          id?: string
+          last_name: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          dni?: string
+          email?: string | null
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cuotra: {
         Row: {
           estado: string | null
@@ -59,6 +95,187 @@ export type Database = {
           pago?: number | null
         }
         Relationships: []
+      }
+      installments: {
+        Row: {
+          amount: number
+          created_at: string
+          due_date: string
+          id: string
+          installment_number: number
+          interest_amount: number | null
+          loan_id: string
+          paid_date: string | null
+          status: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          due_date: string
+          id?: string
+          installment_number: number
+          interest_amount?: number | null
+          loan_id: string
+          paid_date?: string | null
+          status?: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          due_date?: string
+          id?: string
+          installment_number?: number
+          interest_amount?: number | null
+          loan_id?: string
+          paid_date?: string | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "installments_loan_id_fkey"
+            columns: ["loan_id"]
+            isOneToOne: false
+            referencedRelation: "loans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loans: {
+        Row: {
+          amount: number
+          client_id: string
+          created_at: string
+          id: string
+          installments: number
+          interest_rate: number
+          payment_day: number
+          start_date: string
+          status: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          client_id: string
+          created_at?: string
+          id?: string
+          installments: number
+          interest_rate?: number
+          payment_day: number
+          start_date: string
+          status?: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          client_id?: string
+          created_at?: string
+          id?: string
+          installments?: number
+          interest_rate?: number
+          payment_day?: number
+          start_date?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      payment_methods: {
+        Row: {
+          active: boolean
+          config: Json | null
+          created_at: string
+          id: string
+          name: string
+          type: string
+        }
+        Insert: {
+          active?: boolean
+          config?: Json | null
+          created_at?: string
+          id?: string
+          name: string
+          type: string
+        }
+        Update: {
+          active?: boolean
+          config?: Json | null
+          created_at?: string
+          id?: string
+          name?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          client_id: string
+          created_at: string
+          due_date: string
+          id: string
+          installment_number: number
+          interest_amount: number | null
+          loan_id: string
+          notes: string | null
+          payment_date: string
+          payment_method_id: string
+          receipt_number: string | null
+          status: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          client_id: string
+          created_at?: string
+          due_date: string
+          id?: string
+          installment_number: number
+          interest_amount?: number | null
+          loan_id: string
+          notes?: string | null
+          payment_date?: string
+          payment_method_id: string
+          receipt_number?: string | null
+          status?: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          client_id?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          installment_number?: number
+          interest_amount?: number | null
+          loan_id?: string
+          notes?: string | null
+          payment_date?: string
+          payment_method_id?: string
+          receipt_number?: string | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_payment_method_id_fkey"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       Prestamo: {
         Row: {
@@ -83,7 +300,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_late_interest: {
+        Args: { original_amount: number; due_date: string }
+        Returns: number
+      }
+      generate_receipt_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
