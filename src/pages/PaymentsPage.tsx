@@ -5,14 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Bell, CircleDollarSign } from 'lucide-react';
-import { usePayments } from '@/hooks/usePayments';
+import { usePayments, PaymentRow } from '@/hooks/usePayments';
 import { PaymentCard } from '@/components/PaymentCard';
+import { PaymentModal } from '@/components/PaymentModal';
 
 const PaymentsPage: React.FC = () => {
   const navigate = useNavigate();
   const { payments, loading, error, refetch } = usePayments();
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<string>('all');
+  const [selectedPayment, setSelectedPayment] = useState<PaymentRow | null>(null);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
   const filteredPayments = payments.filter(payment => {
     // Filtro de búsqueda
@@ -42,9 +45,13 @@ const PaymentsPage: React.FC = () => {
 
   const stats = getStats();
 
-  const handlePayClick = (payment: any) => {
-    // TODO: Implementar modal de pago
-    console.log('Pagar:', payment);
+  const handlePayClick = (payment: PaymentRow) => {
+    setSelectedPayment(payment);
+    setPaymentModalOpen(true);
+  };
+
+  const handlePaymentComplete = () => {
+    refetch();
   };
 
   const handleViewClient = (clientId: string) => {
@@ -219,6 +226,14 @@ const PaymentsPage: React.FC = () => {
           ))
         )}
       </div>
+
+      {/* Payment Modal */}
+      <PaymentModal
+        payment={selectedPayment}
+        open={paymentModalOpen}
+        onOpenChange={setPaymentModalOpen}
+        onPaymentComplete={handlePaymentComplete}
+      />
     </div>
   );
 };
